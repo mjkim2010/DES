@@ -1,9 +1,13 @@
 package hu.mit.bme.mdsd.simulation;
 
-import hu.mit.bme.mdsd.simulation.entities.LevelEntity;
+//import hu.mit.bme.mdsd.simulation.entities.LevelEntity;
 //import hu.mit.bme.mdsd.simulation.entities.TableEntity;
 //import hu.mit.bme.mdsd.simulation.entities.WaitressEntity;
 import hu.mit.bme.mdsd.simulation.events.SensorEvent;
+import hu.mit.bme.mdsd.simulation.SimulationRunner;
+
+import java.util.concurrent.TimeUnit;
+
 import desmoj.core.dist.ContDist;
 import desmoj.core.dist.ContDistNormal;
 import desmoj.core.dist.ContDistUniform;
@@ -12,6 +16,7 @@ import desmoj.core.dist.DiscreteDistPoisson;
 import desmoj.core.dist.DiscreteDistUniform;
 import desmoj.core.simulator.Model;
 import desmoj.core.simulator.Queue;
+import desmoj.core.simulator.SimClock;
 import desmoj.core.simulator.TimeInstant;
 import desmoj.core.statistic.Histogram;
 import desmoj.core.statistic.Tally;
@@ -24,12 +29,17 @@ public class TankFarmSimulationModel extends Model {
 	private static final int TANK_DELTA_MIN = 0;
 	private static final int TANK_DELTA_MAX = 10;
 	
-	public Queue<LevelEntity> buyersQueue;
-	public Queue<LevelEntity> eatersQueue;
+	//public Queue<LevelEntity> buyersQueue;
+	//public Queue<LevelEntity> eatersQueue;
 	//public Queue<WaitressEntity> idleWaitressQueue;
 	//public Queue<TableEntity> idleTableQueue;
 	
 	private DiscreteDistUniform tankLevelDelta;	  //uniform distribution for modeling tank level change
+	private ContDist temperatureDay;
+	private TimeInstant currentTime;
+	private ContDist temperatureNight;
+	private ContDist pressure;
+	//private SimClock clock;
 	private DiscreteDist<?> customerGroupSize;
 	private ContDist customerArrivalTime;
 	private ContDist buyTime;
@@ -40,10 +50,34 @@ public class TankFarmSimulationModel extends Model {
 	
 	public int getTankLevelChange() {
 		int value = tankLevelDelta.sample().intValue();
+		System.out.println("Tank Level: "  + value);
 		return value;
 	}
 	
-	public int getCustomerGroupSize(){
+	public int getTemperatureChange() {
+		
+		int value; 
+		TimeInstant noon = new TimeInstant(12, TimeUnit.HOURS);
+		System.out.println(currentTime);
+		//If the current time in the simulation is before noon
+		if (TimeInstant.isBefore(currentTime, noon) ) {
+			System.out.println("In if statement");
+			value = temperatureDay.sample().intValue();
+		} else {
+			System.out.println("In else statement");
+			value = temperatureNight.sample().intValue();
+		}
+		System.out.println("Temperature: "  + value);
+		return value;
+	}
+	
+	public int getPressureChange() {
+		int value = pressure.sample().intValue();
+		System.out.println("Pressure: "  + value);
+		return value;
+	}
+	
+	/*public int getCustomerGroupSize(){
 		int value = customerGroupSize.sample().intValue();
 		return value == 0 ? 1 : value;
 	}
@@ -59,7 +93,7 @@ public class TankFarmSimulationModel extends Model {
 	
 	public int getEatTime(){
 		return eatTime.sample().intValue();
-	}
+	}*/
 
 	public TankFarmSimulationModel(Model owner, String name,
 			boolean showInReport, boolean showInTrace) {
@@ -81,15 +115,24 @@ public class TankFarmSimulationModel extends Model {
 
 	@Override
 	public void init() {
-		buyersQueue = new Queue<LevelEntity>(this, "Buyers Queue", true, false);
-		eatersQueue = new Queue<LevelEntity>(this, "Eaters Queue", true, false);
+		//buyersQueue = new Queue<LevelEntity>(this, "Buyers Queue", true, false);
+		//eatersQueue = new Queue<LevelEntity>(this, "Eaters Queue", true, false);
 		//idleWaitressQueue = new Queue<WaitressEntity>(this, "Idle Waitresses Queue", true, false);
 		//idleTableQueue = new Queue<TableEntity>(this, "Idle Tables Queue", true, false);
 
 		/* Minju: we need to set the distributions of our different variables here! */ 
-		tankLevelDelta = new DiscreteDistUniform(this, "Change in tank level", TANK_DELTA_MIN, TANK_DELTA_MAX, true, false);
 		
-		customerGroupSize = new DiscreteDistPoisson(this, "Customer group size", 2, true, false);
+		//clock = new SimClock("Simulation Clock");
+		SimulationRunner simModel = new SimulationRunner();
+		currentTime = simModel.getTime();
+		System.out.println(currentTime);
+		
+		tankLevelDelta = new DiscreteDistUniform(this, "Change in tank level", TANK_DELTA_MIN, TANK_DELTA_MAX, true, false);
+		temperatureDay = new ContDistNormal(this, "Temperature", 70, 5, true, false);
+		temperatureNight = new ContDistNormal(this, "Temperature", 55, 5, true, false);
+		pressure = new ContDistNormal(this, "Pressure", 10, 3, true, false);
+		
+		/*customerGroupSize = new DiscreteDistPoisson(this, "Customer group size", 2, true, false);
 		customerArrivalTime = new ContDistNormal(this, "Customer arrival time", 4*60, 1*60, true, false);
 		buyTime = new ContDistUniform(this, "Buying time", 1*60, 3*60, true, false);
 		eatTime = new ContDistUniform(this, "Eating time", 5*60, 20*60, true, false);
@@ -103,7 +146,7 @@ public class TankFarmSimulationModel extends Model {
 		}
 		
 		timeSpentByCustomer = new Tally(this, "Time spent by customer", true, false);
-		customerGroupSizeHistogram = new Histogram(this, "Histogram", 1, 10, 9, true, false);
+		customerGroupSizeHistogram = new Histogram(this, "Histogram", 1, 10, 9, true, false);*/
 	}
 
 }
