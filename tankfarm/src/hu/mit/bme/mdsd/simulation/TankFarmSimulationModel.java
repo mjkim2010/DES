@@ -20,8 +20,6 @@ import desmoj.core.statistic.Tally;
 
 public class TankFarmSimulationModel extends Model {
 
-	private static final int WAITRESSES = 1;
-	private static final int TABLES = 3;
 	//Arbitrary values for which tank level can change
 	private static final int TANK_DELTA_MIN = 0;
 	private static final int TANK_DELTA_MAX = 10;
@@ -30,14 +28,6 @@ public class TankFarmSimulationModel extends Model {
 	private TimeInstant currentTime;
 	private ContDist temperatureNight;
 	private ContDist pressure;
-	//private SimClock clock;
-	private DiscreteDist<?> customerGroupSize;
-	private ContDist customerArrivalTime;
-	private ContDist buyTime;
-	private ContDist eatTime;
-	
-	public Tally timeSpentByCustomer;
-	public Histogram customerGroupSizeHistogram;
 	
 	public int getTankLevelChange() {
 		int value = tankLevelDelta.sample().intValue();
@@ -52,10 +42,8 @@ public class TankFarmSimulationModel extends Model {
 		System.out.println(currentTime);
 		//If the current time in the simulation is before noon
 		if (TimeInstant.isBefore(currentTime, noon) ) {
-			System.out.println("In if statement");
 			value = temperatureDay.sample().intValue();
 		} else {
-			System.out.println("In else statement");
 			value = temperatureNight.sample().intValue();
 		}
 		System.out.println("Temperature: "  + value);
