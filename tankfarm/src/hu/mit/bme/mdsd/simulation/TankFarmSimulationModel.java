@@ -1,8 +1,5 @@
 package hu.mit.bme.mdsd.simulation;
 
-//import hu.mit.bme.mdsd.simulation.entities.LevelEntity;
-//import hu.mit.bme.mdsd.simulation.entities.TableEntity;
-//import hu.mit.bme.mdsd.simulation.entities.WaitressEntity;
 import hu.mit.bme.mdsd.simulation.events.SensorEvent;
 import hu.mit.bme.mdsd.simulation.SimulationRunner;
 
@@ -25,15 +22,9 @@ public class TankFarmSimulationModel extends Model {
 
 	private static final int WAITRESSES = 1;
 	private static final int TABLES = 3;
-	//M: arbitrary values for which tank level can change
+	//Arbitrary values for which tank level can change
 	private static final int TANK_DELTA_MIN = 0;
 	private static final int TANK_DELTA_MAX = 10;
-	
-	//public Queue<LevelEntity> buyersQueue;
-	//public Queue<LevelEntity> eatersQueue;
-	//public Queue<WaitressEntity> idleWaitressQueue;
-	//public Queue<TableEntity> idleTableQueue;
-	
 	private DiscreteDistUniform tankLevelDelta;	  //uniform distribution for modeling tank level change
 	private ContDist temperatureDay;
 	private TimeInstant currentTime;
@@ -76,24 +67,6 @@ public class TankFarmSimulationModel extends Model {
 		System.out.println("Pressure: "  + value);
 		return value;
 	}
-	
-	/*public int getCustomerGroupSize(){
-		int value = customerGroupSize.sample().intValue();
-		return value == 0 ? 1 : value;
-	}
-	
-	public int getCustomerArrivalTime(){
-		int value = customerArrivalTime.sample().intValue();
-		return value <= 0 ? 0 : value;
-	}
-	
-	public int getBuyTime(){
-		return buyTime.sample().intValue();
-	}
-	
-	public int getEatTime(){
-		return eatTime.sample().intValue();
-	}*/
 
 	public TankFarmSimulationModel(Model owner, String name,
 			boolean showInReport, boolean showInTrace) {
@@ -115,14 +88,6 @@ public class TankFarmSimulationModel extends Model {
 
 	@Override
 	public void init() {
-		//buyersQueue = new Queue<LevelEntity>(this, "Buyers Queue", true, false);
-		//eatersQueue = new Queue<LevelEntity>(this, "Eaters Queue", true, false);
-		//idleWaitressQueue = new Queue<WaitressEntity>(this, "Idle Waitresses Queue", true, false);
-		//idleTableQueue = new Queue<TableEntity>(this, "Idle Tables Queue", true, false);
-
-		/* Minju: we need to set the distributions of our different variables here! */ 
-		
-		//clock = new SimClock("Simulation Clock");
 		SimulationRunner simModel = new SimulationRunner();
 		currentTime = simModel.getTime();
 		System.out.println(currentTime);
@@ -131,22 +96,6 @@ public class TankFarmSimulationModel extends Model {
 		temperatureDay = new ContDistNormal(this, "Temperature", 70, 5, true, false);
 		temperatureNight = new ContDistNormal(this, "Temperature", 55, 5, true, false);
 		pressure = new ContDistNormal(this, "Pressure", 10, 3, true, false);
-		
-		/*customerGroupSize = new DiscreteDistPoisson(this, "Customer group size", 2, true, false);
-		customerArrivalTime = new ContDistNormal(this, "Customer arrival time", 4*60, 1*60, true, false);
-		buyTime = new ContDistUniform(this, "Buying time", 1*60, 3*60, true, false);
-		eatTime = new ContDistUniform(this, "Eating time", 5*60, 20*60, true, false);
-	
-		for (int i = 0; i < WAITRESSES; i++){
-			//idleWaitressQueue.insert(new WaitressEntity(this, "Waitress", false));
-		}
-		
-		for (int i = 0; i < TABLES; i++){
-			//idleTableQueue.insert(new TableEntity(this, "Table", false));
-		}
-		
-		timeSpentByCustomer = new Tally(this, "Time spent by customer", true, false);
-		customerGroupSizeHistogram = new Histogram(this, "Histogram", 1, 10, 9, true, false);*/
 	}
 
 }
