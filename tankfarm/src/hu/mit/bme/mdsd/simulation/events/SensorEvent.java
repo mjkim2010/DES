@@ -1,8 +1,6 @@
 package hu.mit.bme.mdsd.simulation.events;
 
 import hu.mit.bme.mdsd.simulation.TankFarmSimulationModel;
-//import hu.mit.bme.mdsd.simulation.entities.LevelEntity;
-//import hu.mit.bme.mdsd.simulation.entities.TemperatureEntity;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -29,21 +27,6 @@ public class SensorEvent extends ExternalEvent{
 
 	@Override
 	public void eventRoutine() {
-
-		/*int size = model.getCustomerGroupSize();   //M: samples for random value
-		model.customerGroupSizeHistogram.update(size);
-		
-		LevelEntity customerGroup = new LevelEntity(size, model, "Customer Group", false);
-		
-		if (model.idleWaitressQueue.isEmpty()) {
-			model.buyersQueue.insert(customerGroup);
-		}
-		else {
-			//TemperatureEntity waitress = model.idleWaitressQueue.removeFirst();
-			//BuyEndedEvent event = new BuyEndedEvent(model, "Buy ended event", true);
-			//event.schedule(customerGroup, waitress, new TimeSpan(model.getBuyTime()));
-		}
-		*/
 		
 		if (currentTankLevel >= 90) {
 			currentTankLevel = 0;
@@ -59,7 +42,7 @@ public class SensorEvent extends ExternalEvent{
 		
 		Random rand = new Random();
 		int nextTime = BASE_TIME_MIN + rand.nextInt(TIME_DELTA_RANGE);
-		schedule(new TimeSpan(nextTime, TimeUnit.MINUTES));   //M: schedules another measurement every 2 minutes
+		schedule(new TimeSpan(nextTime, TimeUnit.MINUTES));   //schedules another measurement every 2 minutes
 		
 	}
 }
